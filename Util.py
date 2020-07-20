@@ -113,27 +113,48 @@ def generate_trajectory_by_euler_netwok(model, start_point, alpha=-1, duration=1
 
 def generate_trajectory_by_rung4(start_point, fun=exercise_3_vector_field, alpha=-1, duration=100,
                                  time_step=0.001):
-    points = np.empty((1, 5))
+    if alpha is None:
+        M=4
+    else:
+        M=5
+    points = np.empty((1, M))
     time = 0
     p = np.array(start_point)
 
     while time < duration:
-        f = fun(time_step, x=p, alpha=alpha)
-        k1 = np.array(f) * time_step
+        if alpha is None:
+            f = fun(time_step, x=p)
+            k1 = np.array(f) * time_step
 
-        f = fun(time_step, x=(p + k1 / 2), alpha=alpha)
-        k2 = np.array(f) * time_step
+            f = fun(time_step, x=(p + k1 / 2))
+            k2 = np.array(f) * time_step
 
-        f = fun(time_step, x=(p + k2 / 2), alpha=alpha)
-        k3 = np.array(f) * time_step
+            f = fun(time_step, x=(p + k2 / 2))
+            k3 = np.array(f) * time_step
 
-        f = fun(time_step, x=(p + k3), alpha=alpha)
-        k4 = np.array(f) * time_step
+            f = fun(time_step, x=(p + k3))
+            k4 = np.array(f) * time_step
+        else:
+            f = fun(time_step, x=p, alpha=alpha)
+            k1 = np.array(f) * time_step
+
+            f = fun(time_step, x=(p + k1 / 2), alpha=alpha)
+            k2 = np.array(f) * time_step
+
+            f = fun(time_step, x=(p + k2 / 2), alpha=alpha)
+            k3 = np.array(f) * time_step
+
+            f = fun(time_step, x=(p + k3), alpha=alpha)
+            k4 = np.array(f) * time_step
 
         x_1 = p + k1 / 6 + k2 / 3 + k3 / 3 + k4 / 6
 
-        x_0_alpha = np.append(p, alpha)
-        row = np.append(x_0_alpha, x_1).reshape(1, 5)
+        if alpha is None:
+            x_0_alpha = p
+        else:
+            x_0_alpha = np.append(p, alpha)
+
+        row = np.append(x_0_alpha, x_1).reshape(1, M)
 
         points = np.vstack((points, row))
 
@@ -188,12 +209,12 @@ def visualize_trajectories(trajectories, point, alphas):
 def plot_phase_portrait(ax, pred, alpha):
     ax.streamplot(*pred, color='dodgerblue', linewidth=1)
     ax.set_title("alpha = {}".format(alpha))
-    ax.set_xlim([-2, 2])
-    ax.set_ylim([-2, 2])
+    ax.set_xlim([-4, 4])
+    ax.set_ylim([-4, 4])
 
 
 def get_predictions(alpha, model):
-    x = np.arange(-2, 2, 0.01)
+    x = np.arange(-4, 4, 0.01)
     x1, x2 = np.meshgrid(x, x)
     X_0 = np.vstack((x1.flatten(), x2.flatten())).T
 

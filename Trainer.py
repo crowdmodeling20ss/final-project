@@ -179,7 +179,8 @@ def train_rungekutta_compact(BIFURCATION_DATASET, epochs=1000, H=128):
     M = 3  # input_size
     D = 2  # output_size
     H = H  # hidden_size
-    model, loss_fn, optimizer = rungekutta_model_compact(M, D, H)  # defaults: input_size=3, output_size=2, hidden_size=128
+    model, loss_fn, optimizer = rungekutta_model_compact(M, D,
+                                                         H)  # defaults: input_size=3, output_size=2, hidden_size=128
 
     num_train, num_val, num_test = int(N * 0.6), int(N * 0.3), int(N * 0.1)
 
